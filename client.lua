@@ -1,6 +1,6 @@
 -- Add this to qb-weapons/client/main.lua at line 132 - Only add the code under this comment, the next comment tells you where to add more code.
 
-function getAmmoType(AmmoTypeCaps)
+function getAmmoType(AmmoTypeCaps) -- Creates a function
     if AmmoTypeCaps == "AMMO_FLARE" or AmmoTypeCaps == "AMMO_BALL" or AmmoTypeCaps == "AMMO_MINIGUN" or AmmoTypeCaps == "AMMO_STINGER" or AmmoTypeCaps == "AMMO_GRENADELAUNCHER" or AmmoTypeCaps == "AMMO_RPG" or AmmoTypeCaps == "AMMO_SNIPER_REMOTE" or AmmoTypeCaps == "AMMO_STUNGUN" or AmmoTypeCaps == nil then -- Check if weapon need ammo
         return "ReloadError" -- Weapon don't use ammo, or can't be used with ammo items
     end
@@ -21,7 +21,7 @@ function getAmmoType(AmmoTypeCaps)
     end
 end
 
-RegisterCommand('reloadWeapon', function()
+RegisterCommand('reloadWeapon', function() -- Creates a command
     local ped = PlayerPedId() -- Gets the players ped
     local weapon = GetSelectedPedWeapon(ped) -- Gets the players current weapon
     local ammoTypeCaps = QBCore.Shared.Weapons[weapon]["ammotype"] -- Gets the native ammotype of the players weapon
