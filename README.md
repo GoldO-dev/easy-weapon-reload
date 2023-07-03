@@ -1,4 +1,4 @@
-# easy-weapon-reload
+# Easy weapon reload
 A snippet for reloading weapons easier
 
 ## Where do i add the code?
