@@ -1,64 +1,64 @@
 -- Add this to qb-weapons/client/main.lua at line 132 - Only add the code under this comment, the next comment tells you where to add more code.
 
 function getAmmoType(AmmoTypeCaps)
-    if AmmoTypeCaps == "AMMO_FLARE" or AmmoTypeCaps == "AMMO_BALL" or AmmoTypeCaps == "AMMO_MINIGUN" or AmmoTypeCaps == "AMMO_STINGER" or AmmoTypeCaps == "AMMO_GRENADELAUNCHER" or AmmoTypeCaps == "AMMO_RPG" or AmmoTypeCaps == "AMMO_SNIPER_REMOTE" or AmmoTypeCaps == "AMMO_STUNGUN" or AmmoTypeCaps == nil then
-        return "ReloadError"
+    if AmmoTypeCaps == "AMMO_FLARE" or AmmoTypeCaps == "AMMO_BALL" or AmmoTypeCaps == "AMMO_MINIGUN" or AmmoTypeCaps == "AMMO_STINGER" or AmmoTypeCaps == "AMMO_GRENADELAUNCHER" or AmmoTypeCaps == "AMMO_RPG" or AmmoTypeCaps == "AMMO_SNIPER_REMOTE" or AmmoTypeCaps == "AMMO_STUNGUN" or AmmoTypeCaps == nil then -- Check if weapon need ammo
+        return "ReloadError" -- Weapon don't use ammo, or can't be used with ammo items
     end
-    if AmmoTypeCaps == "AMMO_PISTOL" then
-        return "pistol_ammo"
-    elseif AmmoTypeCaps == "AMMO_SMG" then
-        return "smg_ammo"
-    elseif AmmoTypeCaps == "AMMO_SHOTGUN" then
-        return "shotgun_ammo"
-    elseif AmmoTypeCaps == "AMMO_RIFLE" then
-        return "rifle_ammo"
-    elseif AmmoTypeCaps == "AMMO_MG" then
-        return "mg_ammo"
-    elseif AmmoTypeCaps == "AMMO_SNIPER" then
-        return "snp_ammo"
-    elseif AmmoTypeCaps == "AMMO_EMPLAUNCHER" then
-        return "emp_ammo"
+    if AmmoTypeCaps == "AMMO_PISTOL" then -- Checks if the weapon is a pistol, and uses pistol ammo
+        return "pistol_ammo" -- Returns pistol_ammo (the name of the item used to reload pistols)
+    elseif AmmoTypeCaps == "AMMO_SMG" then -- Checks if the weapon is a smg, and uses smg ammo
+        return "smg_ammo" -- Returns smg_ammo (the name of the item used to reload smgs)
+    elseif AmmoTypeCaps == "AMMO_SHOTGUN" then -- Checks if the weapon is a shotgun, and uses shotgun ammo
+        return "shotgun_ammo" -- Returns shotgun_ammo (the name of the item used to reload shotguns)
+    elseif AmmoTypeCaps == "AMMO_RIFLE" then -- Checks if the weapon is a rifle, and uses rifle ammo
+        return "rifle_ammo" -- Returns rifle_ammo (the name of the item used to reload rifles)
+    elseif AmmoTypeCaps == "AMMO_MG" then -- Checks if the weapon is a machine gun, and uses machine gun ammo
+        return "mg_ammo" -- Returns mg_ammo (the name of the item used to reload machine guns)
+    elseif AmmoTypeCaps == "AMMO_SNIPER" then -- Checks if the weapon is a sniper, and uses sniper ammo
+        return "snp_ammo" -- Returns snp_ammo (the name of the item used to reload snipers)
+    elseif AmmoTypeCaps == "AMMO_EMPLAUNCHER" then -- Checks if the weapon is a emp launcher, and uses emp ammo
+        return "emp_ammo" -- Returns emp_ammo (the name of the item used to reload emp lauchers)
     end
 end
 
 RegisterCommand('reloadWeapon', function()
-    local ped = PlayerPedId()
-    local weapon = GetSelectedPedWeapon(ped)
-    local ammoTypeCaps = QBCore.Shared.Weapons[weapon]["ammotype"]
-    local ammoType = getAmmoType(ammoTypeCaps)
-    local ammoItem = QBCore.Shared.Items[ammoType]
+    local ped = PlayerPedId() -- Gets the ped
+    local weapon = GetSelectedPedWeapon(ped) -- Gets the players current weapon
+    local ammoTypeCaps = QBCore.Shared.Weapons[weapon]["ammotype"] -- Gets the native ammotype of the players weapon
+    local ammoType = getAmmoType(ammoTypeCaps) -- Gets the name of the item used to realod the players weapon
+    local ammoItem = QBCore.Shared.Items[ammoType] -- Gets the item used to reload the players weapon
     -- print(ammoType) -- Debug print
     -- print(json.encode(ammoItem)) -- Debug print
-    if ammoType == "ReloadError" then
-        return
+    if ammoType == "ReloadError" then -- Checks if the weapon can be reloaded
+        return -- returns, because there is no point in going further if the weapon can't be reloaded
     end
-    if ammoType == "pistol_ammo" then
-        print("pistol")
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem)
+    if ammoType == "pistol_ammo" then -- Checks if the weapon is a pistol
+        -- print("pistol") -- Debug print
+        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- Reloads the pistol
     end
-    if ammoType == "smg_ammo" then
-        print("smg")
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem)
+    if ammoType == "smg_ammo" then -- Checks if the weapon is a smg
+        -- print("smg") -- Debug print
+        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- Reloads the smg
     end
-    if ammoType == "shotgun_ammo" then
-        print("shotgun")
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem)
+    if ammoType == "shotgun_ammo" then -- Checks if the weapon is a shotgun
+        -- print("shotgun") -- Debug print
+        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- Reloads the shotgun
     end
-    if ammoType == "rifle_ammo" then
-        print("rifle")
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem)
+    if ammoType == "rifle_ammo" then -- Checks if the weapon is a rifle
+        -- print("rifle") -- Debug print
+        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem)  -- Reloads the rifle
     end
-    if ammoType == "mg_ammo" then
-        print("mg")
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem)
+    if ammoType == "mg_ammo" then -- Checks if the weapon is a machine gun
+        -- print("mg") -- Debug print
+        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- reloads the machine gun
     end
-    if ammoType == "snp_ammo" then
-        print("sniper")
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem)
+    if ammoType == "snp_ammo" then  -- Checks if the weapon is a sniper
+        -- print("sniper") -- Debug print
+        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- reloads the sniper
     end
-    if ammoType == "emp_ammo" then
-        print("emp")
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem)
+    if ammoType == "emp_ammo" then -- Checks if the weapon is a emp launcher
+        -- print("emp") -- Debug print
+        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- reloads the emp launcher
     end
 end)
 
