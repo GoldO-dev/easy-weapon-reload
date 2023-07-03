@@ -22,7 +22,7 @@ function getAmmoType(AmmoTypeCaps)
 end
 
 RegisterCommand('reloadWeapon', function()
-    local ped = PlayerPedId() -- Gets the ped
+    local ped = PlayerPedId() -- Gets the players ped
     local weapon = GetSelectedPedWeapon(ped) -- Gets the players current weapon
     local ammoTypeCaps = QBCore.Shared.Weapons[weapon]["ammotype"] -- Gets the native ammotype of the players weapon
     local ammoType = getAmmoType(ammoTypeCaps) -- Gets the name of the item used to realod the players weapon
@@ -65,54 +65,54 @@ end)
 -- Add this to qb-weapons/client/main.lua at line 212 under the Threads comment
 
 
-CreateThread(function()
-    while true do
-        local ped = PlayerPedId()
-        local weapon = GetSelectedPedWeapon(ped)
-        local ammo = GetAmmoInPedWeapon(ped, weapon)
-        local bool, ammoInClip = GetAmmoInClip(ped, weapon)
+CreateThread(function() -- Creathes a thread
+    while true do -- Repeats the thread until the end of the universe (forever)
+        local ped = PlayerPedId() -- Gets the players ped
+        local weapon = GetSelectedPedWeapon(ped) -- Gets the players current weapon
+        local ammo = GetAmmoInPedWeapon(ped, weapon) -- Gets the total amount of ammo in the players weapon
+        local bool, ammoInClip = GetAmmoInClip(ped, weapon) -- gets the amount of ammo in the players weapons clip
         -- print(ammo) -- Debug print
         -- print(bool) -- Debug print
         -- print(ammoInClip) -- Debug print
-        if ammoInClip == 0 then
-            if ammo == 0 then
-                ExecuteCommand('reloadWeapon')
-                Citizen.Wait(Config.ReloadTime)
+        if ammoInClip == 0 then -- Checks if the amount of ammo the the weapons clip is 0
+            if ammo == 0 then -- Checks if the total ammount of ammo in the players weapon is 0
+                ExecuteCommand('reloadWeapon') -- reloads the players weapon
+                Citizen.Wait(Config.ReloadTime) -- Waits until the reload is done, so the reload isn't triggert 1000 times, and spams the players screen with a notification saying "You are already doing something"
             end
         end
-        Citizen.Wait(1)
+        Citizen.Wait(1) -- Waits so the server isn't getting spammed
     end
 end)
 
-Hold = 2
+Hold = 2 -- Sets the amount of seconds you need to hold down R for your weapon to reload -- Defalt 2 (If you change this value you also need to change the Hold value to this value, where there is a comment saying "Change me if first Hold value is changed")
 
-CreateThread(function()
-    while true do
-        Wait(1000)
-        local ped = PlayerPedId()
-        local weapon = GetSelectedPedWeapon(ped)
-        local ammo = GetAmmoInPedWeapon(ped, weapon)
-        local bool, ammoInClip = GetAmmoInClip(ped, weapon)
-        if IsControlPressed(0, 45) and Hold <= 0 then
+CreateThread(function() -- Creathes a thread
+    while true do -- Repeats the thread until the end of the universe (forever)
+        Wait(1000) -- Waits 1 second
+        local ped = PlayerPedId() -- Gets the players ped
+        local weapon = GetSelectedPedWeapon(ped) -- Gets the players current weapon
+        local ammo = GetAmmoInPedWeapon(ped, weapon) -- Gets the total amount of ammo in the players weapon
+        local bool, ammoInClip = GetAmmoInClip(ped, weapon) -- Rets the amount of ammo in the players weapons clip
+        if IsControlPressed(0, 45) and Hold <= 0 then -- Checks if R is pressed, and if it has been pressed down for 2 seconds (the time set in the Hold value)
             -- print(Hold) -- Debug print
-            ExecuteCommand('reloadWeapon')
-            Citizen.Wait(Config.ReloadTime)
-            Hold = 2
+            ExecuteCommand('reloadWeapon') -- Reloads the players weapon
+            Citizen.Wait(Config.ReloadTime) -- Waits until the reload is done, so the reload isn't triggert 1000 times, and spams the players screen with a notification saying "You are already doing something"
+            Hold = 2 -- Resets the hold value (Change me if first hold value is changed)
             -- print(Hold) -- Debug print
         end
-        if IsControlPressed(0, 45) then
-            if Hold - 1 >= 0 then
+        if IsControlPressed(0, 45) then -- Checks if R is pressed
+            if Hold - 1 >= 0 then -- If R is pressed down, check if Hold - 1 is higher then 0
                 -- print(Hold) -- Debug print
-                Hold = Hold - 1
-            else
+                Hold = Hold - 1 -- Removes 1 from the Hold value
+            else -- If Hold - 1 isn't higher then 0 then Hold is equl to 1 
                 -- print(Hold) -- Debug print
-                Hold = 0
+                Hold = 0 -- Sets Hold to 0 meaning that R has been hold down for 2 seconds (more if the default value has been changed)
                 -- print(Hold) -- Debug print
             end
         end
-        if IsControlReleased(0, 45) then
-            Hold = 1
+        if IsControlReleased(0, 45) then -- Checks if R has been released
+            Hold = 2 -- Resets the hold value (Change me if first hold value is changed)
         end
-        Citizen.Wait(0)
+        Citizen.Wait(0) -- Waits so the server isn't getting spammed
     end
 end)
