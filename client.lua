@@ -30,7 +30,7 @@ RegisterCommand('reloadWeapon', function() -- Creates a command
     -- print(ammoType) -- Debug print
     -- print(json.encode(ammoItem)) -- Debug print
     if ammoType == "ReloadError" then -- Checks if the weapon can be reloaded
-        return -- returns, because there is no point in going further if the weapon can't be reloaded
+        return -- Returns, because there is no point in going further if the weapon can't be reloaded
     end
     if ammoType == "pistol_ammo" then -- Checks if the weapon is a pistol
         -- print("pistol") -- Debug print
@@ -50,15 +50,15 @@ RegisterCommand('reloadWeapon', function() -- Creates a command
     end
     if ammoType == "mg_ammo" then -- Checks if the weapon is a machine gun
         -- print("mg") -- Debug print
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- reloads the machine gun
+        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- Reloads the machine gun
     end
     if ammoType == "snp_ammo" then  -- Checks if the weapon is a sniper
         -- print("sniper") -- Debug print
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- reloads the sniper
+        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- Reloads the sniper
     end
     if ammoType == "emp_ammo" then -- Checks if the weapon is a emp launcher
         -- print("emp") -- Debug print
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- reloads the emp launcher
+        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- Reloads the emp launcher
     end
 end)
 
@@ -70,13 +70,13 @@ CreateThread(function() -- Creathes a thread
         local ped = PlayerPedId() -- Gets the players ped
         local weapon = GetSelectedPedWeapon(ped) -- Gets the players current weapon
         local ammo = GetAmmoInPedWeapon(ped, weapon) -- Gets the total amount of ammo in the players weapon
-        local bool, ammoInClip = GetAmmoInClip(ped, weapon) -- gets the amount of ammo in the players weapons clip
+        local bool, ammoInClip = GetAmmoInClip(ped, weapon) -- Gets the amount of ammo in the players weapons clip
         -- print(ammo) -- Debug print
         -- print(bool) -- Debug print
         -- print(ammoInClip) -- Debug print
         if ammoInClip == 0 then -- Checks if the amount of ammo the the weapons clip is 0
             if ammo == 0 then -- Checks if the total ammount of ammo in the players weapon is 0
-                ExecuteCommand('reloadWeapon') -- reloads the players weapon
+                ExecuteCommand('reloadWeapon') -- Reloads the players weapon
                 Citizen.Wait(Config.ReloadTime) -- Waits until the reload is done, so the reload isn't triggert 1000 times, and spams the players screen with a notification saying "You are already doing something"
             end
         end
@@ -92,7 +92,7 @@ CreateThread(function() -- Creathes a thread
         local ped = PlayerPedId() -- Gets the players ped
         local weapon = GetSelectedPedWeapon(ped) -- Gets the players current weapon
         local ammo = GetAmmoInPedWeapon(ped, weapon) -- Gets the total amount of ammo in the players weapon
-        local bool, ammoInClip = GetAmmoInClip(ped, weapon) -- Rets the amount of ammo in the players weapons clip
+        local bool, ammoInClip = GetAmmoInClip(ped, weapon) -- Gets the amount of ammo in the players weapons clip
         if IsControlPressed(0, 45) and Hold <= 0 then -- Checks if R is pressed, and if it has been pressed down for 2 seconds (the time set in the Hold value)
             -- print(Hold) -- Debug print
             ExecuteCommand('reloadWeapon') -- Reloads the players weapon
