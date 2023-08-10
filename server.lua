@@ -1,3 +1,12 @@
+-- Replace the weapons:server:removeWeaponAmmoItem event at line 286 in qb-weapons/server/main.lua with this
+RegisterNetEvent('weapons:server:removeWeaponAmmoItem', function(item)
+    local Player = QBCore.Functions.GetPlayer(source)
+
+    if not Player or type(item) ~= 'table' or not item.name then return end
+
+    Player.Functions.RemoveItem(item.name, 1)
+end)
+
 -- Replace the things in qb-weapons/server/main.lua at line 305 in between the AMMO comment and the TINTS comment
 
 QBCore.Functions.CreateUseableItem('pistol_ammo', function(source, item)
