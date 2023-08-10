@@ -2,8 +2,5 @@
 A snippet for reloading weapons easier
 
 ## Where do i add the code?
-You will need to copy and paste some code.
-The client.lua and server.lua tells you where to add the code.
-
-## I have a critical update i didn't have time to push, will do it when i get time. 
+This is nnot a drag and drop script, every line, function and event needs to be copy and pasted manually every file tells you where to put the things
 

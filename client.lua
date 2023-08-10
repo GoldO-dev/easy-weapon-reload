@@ -1,118 +1,95 @@
--- Add this to qb-weapons/client/main.lua at line 132 - Only add the code under this comment, the next comment tells you where to add more code.
 
-function getAmmoType(AmmoTypeCaps) -- Creates a function
-    if AmmoTypeCaps == "AMMO_FLARE" or AmmoTypeCaps == "AMMO_BALL" or AmmoTypeCaps == "AMMO_MINIGUN" or AmmoTypeCaps == "AMMO_STINGER" or AmmoTypeCaps == "AMMO_GRENADELAUNCHER" or AmmoTypeCaps == "AMMO_RPG" or AmmoTypeCaps == "AMMO_SNIPER_REMOTE" or AmmoTypeCaps == "AMMO_STUNGUN" or AmmoTypeCaps == nil then -- Check if weapon uses/needs ammo
-        return "ReloadError" -- Weapon don't use ammo, or can't be used with ammo items
-    end
-    if AmmoTypeCaps == "AMMO_PISTOL" then -- Checks if the weapon is a pistol, and uses pistol ammo
-        return "pistol_ammo" -- Returns pistol_ammo (the name of the item used to reload pistols)
-    elseif AmmoTypeCaps == "AMMO_SMG" then -- Checks if the weapon is a smg, and uses smg ammo
-        return "smg_ammo" -- Returns smg_ammo (the name of the item used to reload smgs)
-    elseif AmmoTypeCaps == "AMMO_SHOTGUN" then -- Checks if the weapon is a shotgun, and uses shotgun ammo
-        return "shotgun_ammo" -- Returns shotgun_ammo (the name of the item used to reload shotguns)
-    elseif AmmoTypeCaps == "AMMO_RIFLE" then -- Checks if the weapon is a rifle, and uses rifle ammo
-        return "rifle_ammo" -- Returns rifle_ammo (the name of the item used to reload rifles)
-    elseif AmmoTypeCaps == "AMMO_MG" then -- Checks if the weapon is a machine gun, and uses machine gun ammo
-        return "mg_ammo" -- Returns mg_ammo (the name of the item used to reload machine guns)
-    elseif AmmoTypeCaps == "AMMO_SNIPER" then -- Checks if the weapon is a sniper, and uses sniper ammo
-        return "snp_ammo" -- Returns snp_ammo (the name of the item used to reload snipers)
-    elseif AmmoTypeCaps == "AMMO_EMPLAUNCHER" then -- Checks if the weapon is a emp launcher, and uses emp ammo
-        return "emp_ammo" -- Returns emp_ammo (the name of the item used to reload emp lauchers)
-    end
-end
+
+-- Add this to qb-weapons/client/main.lua at line 131 - Only add the code under this comment, the next comment tells you where to add more code.
+
+local hold = Config.HoldToReload -- Creates a local value called hold that looks at the HoldToReload value in the qb-weapons/config.lua
+local isReloading = false -- Creates a boolean that tells if the player is reloading or not
+local isLoadedIn = false -- Creates a boolean that tells if the player is loaded into the server or not
+
+function hasForbiddenType(weapon) -- Creates a global function called hasForbiddenType
+    for k, v in pairs(Config.forbiddenTypes) do -- Creates a for loop that loops all forbiddenTypes set in the qb-weapons/config.lua through
+        if tostring(QBCore.Shared.Weapons[weapon]["ammotype"]) == v then -- Checks if the weapon the player has equipped is one of the forbiddenTypes set in the qb-weapons/config.lua through
+            return true -- If the weapon the player has equipped is one of the forbiddenTypes returns true
+        end -- Ends the if statement
+    end -- Ends the for loop
+end -- Ends the function
+
+AddEventHandler('QBCore:Client:OnPlayerLoaded', function() --Listens for the 'QBCore:Client:OnPlayerLoaded' event
+    isLoadedIn = true -- Sets the isLoadedIn boolean to true meaning that the player is loaded into the server
+end)
 
 RegisterCommand('reloadWeapon', function() -- Creates a command
     local ped = PlayerPedId() -- Gets the players ped
     local weapon = GetSelectedPedWeapon(ped) -- Gets the players current weapon
-    local ammoTypeCaps = QBCore.Shared.Weapons[weapon]["ammotype"] -- Gets the native ammotype of the players weapon
-    local ammoType = getAmmoType(ammoTypeCaps) -- Gets the name of the item used to realod the players weapon
-    local ammoItem = QBCore.Shared.Items[ammoType] -- Gets the item used to reload the players weapon
-    -- print(ammoType) -- Debug print
-    -- print(json.encode(ammoItem)) -- Debug print
-    if ammoType == "ReloadError" then -- Checks if the weapon can be reloaded
-        return -- Returns, because there is no point in going further if the weapon can't be reloaded
-    end
-    if ammoType == "pistol_ammo" then -- Checks if the weapon is a pistol
-        -- print("pistol") -- Debug print
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- Reloads the pistol
-    end
-    if ammoType == "smg_ammo" then -- Checks if the weapon is a smg
-        -- print("smg") -- Debug print
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- Reloads the smg
-    end
-    if ammoType == "shotgun_ammo" then -- Checks if the weapon is a shotgun
-        -- print("shotgun") -- Debug print
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- Reloads the shotgun
-    end
-    if ammoType == "rifle_ammo" then -- Checks if the weapon is a rifle
-        -- print("rifle") -- Debug print
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem)  -- Reloads the rifle
-    end
-    if ammoType == "mg_ammo" then -- Checks if the weapon is a machine gun
-        -- print("mg") -- Debug print
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- Reloads the machine gun
-    end
-    if ammoType == "snp_ammo" then  -- Checks if the weapon is a sniper
-        -- print("sniper") -- Debug print
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- Reloads the sniper
-    end
-    if ammoType == "emp_ammo" then -- Checks if the weapon is a emp launcher
-        -- print("emp") -- Debug print
-        TriggerServerEvent('weapons:server:useAmmo', ammoType, ammoItem) -- Reloads the emp launcher
-    end
+    if isLoadedIn and weapon ~= nil then -- Checks if the player is loaded into the server and if the weapon the player has equipped isn't nil
+        if hasForbiddenType(weapon) then return end -- Checks if the hasForbiddenType function returns true (the player has a weapon with a forbidden type) if it returns true then returns/stops the funciton / 2. if statement
+        
+        Wait(5) -- Waits 5 miliseconds 
+    
+        local ammoTypeCaps = QBCore.Shared.Weapons[weapon]["ammotype"] -- Gets the native ammotype of the players weapon
+        local ammoType = Testing(ammoTypeCaps) -- Returns the name of the item used to reload the players weapon
+        local ammoItem = QBCore.Shared.Items[tostring(ammoType)] -- Gets the table with the info on the item used to reload the players weapon
+        if QBCore.Functions.HasItem(tostring(ammoItem.name)) then -- Checks if the player has the item needed to reload the weapon
+            isReloading = true -- Sets the isReloading boolean to true meaning that the player is reloading its weapon
+            TriggerServerEvent('weapons:server:useAmmo', tostring(ammoType), ammoTypeCaps, ammoItem) -- Triggers the server event that should do the reloading
+            Wait(Config.ReloadTime+5) -- Waits the time it takes to reload the weapon + 5 miliseconds
+            isReloading = false -- Sets the isReloading boolean to false meaning that the player is done reloading its weapon
+        else
+            QBCore.Functions.Notify(Lang:t('error.no_ammo'), "error") -- Tells the player that it dont have the item needed to reload the weapon
+            return -- Stops the function
+        end -- Ends the has item check (the 3. if statement)
+    else 
+        return -- Stops the function
+    end -- Ends the 1. if statement
 end)
 
--- Add this to qb-weapons/client/main.lua at line 212 under the Threads comment
+-- Add this to qb-weapons/client/main.lua at line 177 under the Threads comment
 
-
-CreateThread(function() -- Creathes a thread
-    while true do -- Repeats the thread until the end of the universe (forever)
+CreateThread(function() -- Creates a thread
+    while true do -- Creates a loop
         local ped = PlayerPedId() -- Gets the players ped
         local weapon = GetSelectedPedWeapon(ped) -- Gets the players current weapon
-        local ammo = GetAmmoInPedWeapon(ped, weapon) -- Gets the total amount of ammo in the players weapon
-        local bool, ammoInClip = GetAmmoInClip(ped, weapon) -- Gets the amount of ammo in the players weapons clip
-        -- print(ammo) -- Debug print
-        -- print(bool) -- Debug print
-        -- print(ammoInClip) -- Debug print
-        if ammoInClip == 0 then -- Checks if the amount of ammo the the weapons clip is 0
-            if ammo == 0 then -- Checks if the total ammount of ammo in the players weapon is 0
-                ExecuteCommand('reloadWeapon') -- Reloads the players weapon
-                Citizen.Wait(Config.ReloadTime) -- Waits until the reload is done, so the reload isn't triggert 1000 times, and spams the players screen with a notification saying "You are already doing something"
-            end
-        end
-        Citizen.Wait(1) -- Waits so the server isn't getting spammed
-    end
-end)
+        if isLoadedIn and weapon ~= nil then  -- Checks if the player is loaded into the server and if the weapon the player has equipped isn't nil
+            if not hasForbiddenType(weapon) and not isReloading then -- Checks if the hasForbiddenType function returns true (the player has a weapon with a forbidden type) and if the player isn't reloading 
+                Wait(1000) -- Waits 1000 miliseconds (1 second)
+                if IsControlPressed(0, 45) and hold <= 0 then -- Checks if the player has hold R down in the time set in qb-weapons/config.lua
+                    ExecuteCommand('reloadWeapon') -- Runs the command that does the reloading
+                    hold = Config.HoldToReload -- Resets the hold value
+                    Wait(Config.ReloadTime+50) -- Waits the time it takes to reload the weapon + 50 miliseconds
+                end -- Ends the 3. if statement
+                if IsControlPressed(0, 45) then -- Chels of the player is holding R down
+                    if hold - 1 >= 0 then -- Checks if hold is - 1 is larger or equals to 0
+                        hold = hold - 1 -- Removes 1 from second from the hold value
+                    else
+                        hold = 0 -- Sets the hold value to 0
+                    end -- Ends the 5. if statement
+                end -- Ends the 4. if statement
+                if IsControlReleased(0, 45) then -- Checks if the player stopped holding R down
+                    hold = Config.HoldToReload -- Resets the hold value
+                end -- Ends the 6. if statement
+            end -- Ends the 2. if statement
+            Wait(20) -- Waits 20 miliseconds 
+        end -- Ends the 1. if statement
+        Wait(1200) -- Waits 1200 miliseconds (1 second and 200 miliseconds)
+    end -- Ends the loop
+end) -- Ends the thread
 
-Hold = 2 -- Sets the amount of seconds you need to hold down R for your weapon to reload -- Defalt 2 (If you change this value you also need to change the Hold value to this value, where there is a comment saying "Change me if first Hold value is changed")
-
-CreateThread(function() -- Creathes a thread
-    while true do -- Repeats the thread until the end of the universe (forever)
-        Wait(1000) -- Waits 1 second
+CreateThread(function() -- Creates a thread 
+    while true do -- Creates a loop
         local ped = PlayerPedId() -- Gets the players ped
         local weapon = GetSelectedPedWeapon(ped) -- Gets the players current weapon
-        local ammo = GetAmmoInPedWeapon(ped, weapon) -- Gets the total amount of ammo in the players weapon
-        local bool, ammoInClip = GetAmmoInClip(ped, weapon) -- Gets the amount of ammo in the players weapons clip
-        if IsControlPressed(0, 45) and Hold <= 0 then -- Checks if R is pressed, and if it has been pressed down for 2 seconds (the time set in the Hold value)
-            -- print(Hold) -- Debug print
-            ExecuteCommand('reloadWeapon') -- Reloads the players weapon
-            Citizen.Wait(Config.ReloadTime) -- Waits until the reload is done, so the reload isn't triggert 1000 times, and spams the players screen with a notification saying "You are already doing something"
-            Hold = 2 -- Resets the hold value (Change me if first hold value is changed)
-            -- print(Hold) -- Debug print
-        end
-        if IsControlPressed(0, 45) then -- Checks if R is pressed
-            if Hold - 1 >= 0 then -- If R is pressed down, check if Hold - 1 is higher then 0
-                -- print(Hold) -- Debug print
-                Hold = Hold - 1 -- Removes 1 from the Hold value
-            else -- If Hold - 1 isn't higher then 0 then Hold is equl to 1 
-                -- print(Hold) -- Debug print
-                Hold = 0 -- Sets Hold to 0 meaning that R has been hold down for 2 seconds (more if the default value has been changed)
-                -- print(Hold) -- Debug print
-            end
-        end
-        if IsControlReleased(0, 45) then -- Checks if R has been released
-            Hold = 2 -- Resets the hold value (Change me if first hold value is changed)
-        end
-        Citizen.Wait(0) -- Waits so the server isn't getting spammed
-    end
-end)
+        local ammoInWeapon = GetAmmoInPedWeapon(ped, weapon) -- Gets the ammo in the players current weapon
+        local bool, ammoInClip = GetAmmoInClip(ped, weapon) -- Gets the ammo in the clip of the players current weapon
+        if isLoadedIn and weapon ~= nil and weapon ~= 0 then -- Checks if the player is loaded into the server and if the weapon the player has equipped isn't nil
+            if not hasForbiddenType(weapon) and not isReloading then -- Checks if the hasForbiddenType function returns true (the player has a weapon with a forbidden type) and if the player isn't reloading 
+                if ammoInWeapon == 0 and ammoInClip == 0 then -- Cheks if the weapon have 0 ammo
+                    Wait(10) -- Waits 10 miliseconds 
+                    ExecuteCommand('reloadWeapon') -- Runs the command that does the reloading
+                    Wait(Config.ReloadTime+250) -- Waits the time it takes to reload the weapon + 250 miliseconds
+                end -- Ends the 3. if statement
+            end -- Ends the 2. if statement
+            Wait(200) -- Waits 200 miliseconds 
+        end -- Ends the 1. if statement
+        Wait(1200) -- Waits 1200 miliseconds (1 second and 200 miliseconds)
+    end -- Ends the loop
+end) -- Ends the thread
