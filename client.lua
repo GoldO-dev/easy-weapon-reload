@@ -35,7 +35,7 @@ RegisterCommand('reloadWeapon', function() -- Creates a command
             Wait(Config.ReloadTime+5) -- Waits the time it takes to reload the weapon + 5 miliseconds
             isReloading = false -- Sets the isReloading boolean to false meaning that the player is done reloading its weapon
         else
-            QBCore.Functions.Notify(Lang:t('error.no_ammo'), "error") -- Tells the player that it dont have the item needed to reload the weapon
+            --QBCore.Functions.Notify(Lang:t('error.no_ammo'), "error") -- Tells the player that it dont have the item needed to reload the weapon
             return -- Stops the function
         end -- Ends the has item check (the 3. if statement)
     else 
